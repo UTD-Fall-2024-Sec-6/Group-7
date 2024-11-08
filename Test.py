@@ -1,5 +1,6 @@
 import unittest
 from datetime import datetime
+from Main import User, DatabaseManager, StudyGroupController, StudyGroupGUI
 
 class TestStudyGroupMatrix(unittest.TestCase):
     def setUp(self):
