@@ -4,8 +4,18 @@ from dataclasses import dataclass
 from uuid import uuid4
 
 @dataclass
+@dataclass
 class User:
     def __init__(self, name, password, email, study_group=None):
+        if not name or not isinstance(name, str) or not name.strip():
+            raise ValueError("Invalid username: Username cannot be empty or None.")
+        
+        if not password or not isinstance(password, str) or not password.strip():
+            raise ValueError("Invalid password: Password cannot be empty or None.")
+        
+        if not email or not isinstance(email, str) or not email.strip():
+            raise ValueError("Invalid email: Email cannot be empty or None.")
+        
         self.userID = str(uuid4())
         self.userName = name
         self.password = password
@@ -19,11 +29,13 @@ class User:
         return False
 
 
+
 class StudyGroup:
-    def __init__(self, groupName: str, course: str, location: str, date: datetime, maxSize: int):
+    def __init__(self, groupName: Optional[str], course: Optional[str], location: Optional[str], date: Optional[datetime], maxSize: int):
         dbManager = DatabaseManager()
 
-        if not groupName.strip():
+        # Validate group name
+        if not groupName or not groupName.strip():
             print("Error: Group name cannot be empty.")
             self.is_valid = False
             return
@@ -33,7 +45,8 @@ class StudyGroup:
             self.is_valid = False
             return
 
-        if not course.strip():
+        # Validate course
+        if not course or not course.strip():
             print("Error: Course name cannot be empty.")
             self.is_valid = False
             return
@@ -43,7 +56,8 @@ class StudyGroup:
             self.is_valid = False
             return
 
-        if not location.strip():
+        # Validate location
+        if not location or not location.strip():
             print("Error: Location cannot be empty.")
             self.is_valid = False
             return
@@ -53,11 +67,19 @@ class StudyGroup:
             self.is_valid = False
             return
 
+        # Validate date
+        if not isinstance(date, datetime):
+            print("Error: Invalid date. Date must be a datetime object.")
+            self.is_valid = False
+            return
+
+        # Validate max size
         if maxSize <= 0:
             print("Error: Invalid max size. The size of the group must be greater than 0.")
             self.is_valid = False
             return
 
+        # All validations passed
         self.is_valid = True
         self.groupName = groupName
         self.groupID = str(uuid4())
@@ -66,6 +88,8 @@ class StudyGroup:
         self.date = date
         self.maxSize = maxSize
         self.members: List[User] = []
+
+
         
     def addMember(self, user: User) -> bool:
         if not self.is_valid:
