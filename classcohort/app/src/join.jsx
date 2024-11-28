@@ -20,9 +20,7 @@ const CreateStudyGroup = () => {
       <main className="h-screen flex items-center justify-center">
         <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-2xl">
           {/* Header */}
-          <h2 className="text-xl font-bold text-center mb-4">
-            Join Study Group
-          </h2>
+          <h2 className="text-xl font-bold text-center mb-4">Join Study Group</h2>
 
           {/* Main Content */}
           <div className="flex space-x-6">
@@ -46,7 +44,6 @@ const CreateStudyGroup = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
-              
             </div>
 
             {/* Right Section: Preview Box */}
@@ -64,6 +61,16 @@ const CreateStudyGroup = () => {
               className="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
             >
               Join
+            </button>
+          </div>
+
+          {/* Navigation Button to /app */}
+          <div className="flex justify-center mt-4">
+            <button
+              onClick={() => navigate("/app")}
+              className="px-6 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+            >
+              Go to HomePage
             </button>
           </div>
         </div>
