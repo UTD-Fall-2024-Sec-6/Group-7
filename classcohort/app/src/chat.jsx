@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const ChatPage = () => {
   const [chats, setChats] = useState([
@@ -20,6 +21,7 @@ const ChatPage = () => {
   });
   const [newMessage, setNewMessage] = useState("");
   const chatBoxRef = useRef(null);
+  const navigate = useNavigate();
 
   // Auto-scroll to the newest message
   useEffect(() => {
@@ -64,6 +66,10 @@ const ChatPage = () => {
     }));
   };
 
+  const handleGoBack = () => {
+    history.push("/app");
+  };
+
   return (
     <>
       <main className="h-screen flex items-center justify-center">
@@ -82,11 +88,10 @@ const ChatPage = () => {
                     <p
                       key={chat.id}
                       onClick={() => handleChatSwitch(chat.id)}
-                      className={`p-2 rounded-lg text-center cursor-pointer ${
-                        currentChatId === chat.id
-                          ? "bg-blue-500 text-white"
-                          : "bg-blue-200 hover:bg-blue-300"
-                      }`}
+                      className={`p-2 rounded-lg text-center cursor-pointer ${currentChatId === chat.id
+                        ? "bg-blue-500 text-white"
+                        : "bg-blue-200 hover:bg-blue-300"
+                        }`}
                     >
                       {chat.name}
                     </p>
@@ -105,16 +110,14 @@ const ChatPage = () => {
                 {(chatHistories[currentChatId] || []).map((msg) => (
                   <div
                     key={msg.id}
-                    className={`flex ${
-                      msg.sender === "me" ? "justify-end" : "justify-start"
-                    } mb-2`}
+                    className={`flex ${msg.sender === "me" ? "justify-end" : "justify-start"
+                      } mb-2`}
                   >
                     <p
-                      className={`${
-                        msg.sender === "me"
-                          ? "bg-blue-500 text-white"
-                          : "bg-blue-200 text-gray-800"
-                      } px-4 py-2 rounded-lg max-w-xs`}
+                      className={`${msg.sender === "me"
+                        ? "bg-blue-500 text-white"
+                        : "bg-blue-200 text-gray-800"
+                        } px-4 py-2 rounded-lg max-w-xs`}
                     >
                       {msg.text}
                     </p>
@@ -142,6 +145,16 @@ const ChatPage = () => {
                 </button>
               </form>
             </div>
+          </div>
+
+          {/* Navigation Button to /app */}
+          <div className="flex justify-center mt-4">
+            <button
+              onClick={() => navigate("/app")}
+              className="px-6 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+            >
+              Go to HomePage
+            </button>
           </div>
         </div>
       </main>
