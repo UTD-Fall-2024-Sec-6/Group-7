@@ -1,0 +1,3 @@
+cd classcohort
+cd app
+npm run dev
