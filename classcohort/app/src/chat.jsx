@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { FiLogOut } from "react-icons/fi"; // Importing the logout icon
 
 const ChatPage = () => {
   const [chats, setChats] = useState([
@@ -66,14 +67,24 @@ const ChatPage = () => {
     }));
   };
 
-  const handleGoBack = () => {
-    history.push("/app");
+  const handleSignOut = () => {
+    // Perform sign-out logic
+    navigate("/signin"); // Redirect to sign-in page
   };
 
   return (
     <>
       <main className="h-screen flex items-center justify-center">
-        <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-4xl">
+        <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-4xl relative">
+          {/* Sign Out Button */}
+          <button
+            onClick={handleSignOut}
+            className="absolute top-4 right-4 text-red-500 hover:text-red-600"
+            aria-label="Sign Out"
+          >
+            <FiLogOut size={20} />
+          </button>
+
           {/* Header */}
           <h2 className="text-xl font-bold text-center mb-4">Message</h2>
 
@@ -88,10 +99,11 @@ const ChatPage = () => {
                     <p
                       key={chat.id}
                       onClick={() => handleChatSwitch(chat.id)}
-                      className={`p-2 rounded-lg text-center cursor-pointer ${currentChatId === chat.id
-                        ? "bg-blue-500 text-white"
-                        : "bg-blue-200 hover:bg-blue-300"
-                        }`}
+                      className={`p-2 rounded-lg text-center cursor-pointer ${
+                        currentChatId === chat.id
+                          ? "bg-blue-500 text-white"
+                          : "bg-blue-200 hover:bg-blue-300"
+                      }`}
                     >
                       {chat.name}
                     </p>
@@ -110,14 +122,16 @@ const ChatPage = () => {
                 {(chatHistories[currentChatId] || []).map((msg) => (
                   <div
                     key={msg.id}
-                    className={`flex ${msg.sender === "me" ? "justify-end" : "justify-start"
-                      } mb-2`}
+                    className={`flex ${
+                      msg.sender === "me" ? "justify-end" : "justify-start"
+                    } mb-2`}
                   >
                     <p
-                      className={`${msg.sender === "me"
-                        ? "bg-blue-500 text-white"
-                        : "bg-blue-200 text-gray-800"
-                        } px-4 py-2 rounded-lg max-w-xs`}
+                      className={`${
+                        msg.sender === "me"
+                          ? "bg-blue-500 text-white"
+                          : "bg-blue-200 text-gray-800"
+                      } px-4 py-2 rounded-lg max-w-xs`}
                     >
                       {msg.text}
                     </p>

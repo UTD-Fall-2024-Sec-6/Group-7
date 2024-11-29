@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FiLogOut } from "react-icons/fi"; // Importing the logout icon
 
 const CreateStudyGroup = () => {
   const navigate = useNavigate();
@@ -15,10 +16,24 @@ const CreateStudyGroup = () => {
     if (memberLimit > 1) setMemberLimit((prev) => prev - 1);
   };
 
+  const handleSignOut = () => {
+    // Perform sign-out logic here
+    navigate("/signin"); // Redirect to the sign-in page
+  };
+
   return (
     <>
       <main className="h-screen flex items-center justify-center">
-        <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-2xl">
+        <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-2xl relative">
+          {/* Sign Out Button */}
+          <button
+            onClick={handleSignOut}
+            className="absolute top-4 right-4 text-red-500 hover:text-red-600"
+            aria-label="Sign Out"
+          >
+            <FiLogOut size={20} />
+          </button>
+
           {/* Header */}
           <h2 className="text-xl font-bold text-center mb-4">Join Study Group</h2>
 
@@ -54,7 +69,7 @@ const CreateStudyGroup = () => {
             </div>
           </div>
 
-          {/* Confirm Button */}
+          {/* Join Button */}
           <div className="flex justify-center mt-6">
             <button
               onClick={() => navigate("/chat")}

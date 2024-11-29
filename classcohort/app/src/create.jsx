@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FiLogOut } from "react-icons/fi"; // Importing the logout icon
 
 const CreateStudyGroup = () => {
   const navigate = useNavigate();
@@ -15,10 +16,24 @@ const CreateStudyGroup = () => {
     if (memberLimit > 1) setMemberLimit((prev) => prev - 1);
   };
 
+  const handleSignOut = () => {
+    // Perform sign-out logic here
+    navigate("/signin"); // Redirect to the sign-in page or appropriate route
+  };
+
   return (
     <>
       <main className="h-screen flex items-center justify-center">
-        <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-2xl">
+        <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-2xl relative">
+          {/* Sign Out Icon */}
+          <button
+            onClick={handleSignOut}
+            className="absolute top-4 right-4 text-red-500 hover:text-red-600"
+            aria-label="Sign Out"
+          >
+            <FiLogOut size={20} />
+          </button>
+
           {/* Header */}
           <h2 className="text-xl font-bold text-center mb-4">
             Create Study Group
@@ -47,33 +62,32 @@ const CreateStudyGroup = () => {
                 />
               </div>
               <div>
-  <label className="block text-sm font-bold text-center">Member Limit</label>
-  <div className="flex justify-center items-center space-x-4 mt-2">
-    <button
-      onClick={handleDecrement}
-      className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-    >
-      -
-    </button>
-    <span className="text-lg font-bold">{memberLimit}</span>
-    <button
-      onClick={handleIncrement}
-      className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-    >
-      +
-    </button>
-  </div>
-</div>
-
+                <label className="block text-sm font-bold text-center">
+                  Member Limit
+                </label>
+                <div className="flex justify-center items-center space-x-4 mt-2">
+                  <button
+                    onClick={handleDecrement}
+                    className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  >
+                    -
+                  </button>
+                  <span className="text-lg font-bold">{memberLimit}</span>
+                  <button
+                    onClick={handleIncrement}
+                    className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
             </div>
 
             {/* Right Section: Preview Box */}
             <div className="flex-grow bg-blue-100 rounded-lg p-6 text-center">
               <h3 className="text-lg font-bold">{courseName}</h3>
               <p className="text-sm">Located in {location}</p>
-              <p className="text-sm">
-                {memberLimit} Members
-              </p>
+              <p className="text-sm">{memberLimit} Members</p>
             </div>
           </div>
 
