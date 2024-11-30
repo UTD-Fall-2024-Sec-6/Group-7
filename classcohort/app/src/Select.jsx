@@ -1,62 +1,113 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiLogOut } from "react-icons/fi"; // Importing the logout icon
+import { FiLogOut, FiHome } from "react-icons/fi"; // Importing icons
 
 const Select = () => {
-    const navigate = useNavigate();
-    const [courses] = useState([
-        { name: "CS 3354", location: "ECS 1.205", memberLimit: 24 },
-        { name: "CS 4341", location: "ECS 1.206", memberLimit: 7 },
-        { name: "CS 3230", location: "ECS 2.101", memberLimit: 26 },
-        { name: "CS 2305", location: "ECS 2.102", memberLimit: 15 },
-    ]);
+  const navigate = useNavigate();
 
-    const handleSignOut = () => {
-        // Perform sign-out logic here
-        navigate("/signin"); // Redirect to the sign-in page or appropriate route
-    };
+  // Retrieve study groups from localStorage or use predefined courses
+  const [courses, setCourses] = useState(
+    JSON.parse(localStorage.getItem("studyGroups")) || []
+  );
 
-    return (
-        <>
-            <main className="h-screen flex items-center justify-center">
-                <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-4xl relative">
-                    {/* Sign Out Icon */}
+  useEffect(() => {
+    // Update localStorage when courses change
+    localStorage.setItem("studyGroups", JSON.stringify(courses));
+  }, [courses]);
+
+  const handleHomePage = () => {
+    navigate("/app");
+  };
+
+  const handleSignOut = () => {
+    navigate("/signin");
+  };
+
+  const handleDelete = (index) => {
+    const updatedCourses = courses.filter((_, i) => i !== index);
+    setCourses(updatedCourses);
+    localStorage.setItem("studyGroups", JSON.stringify(updatedCourses)); // Update localStorage
+  };
+
+  return (
+    <>
+      <main className="h-screen flex items-center justify-center">
+        <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-4xl relative">
+          {/* Navigation Buttons */}
+          <div className="absolute top-4 right-4 flex space-x-2">
+            {/* HomePage Button */}
+            <button
+              onClick={handleHomePage}
+              className="text-blue-500 hover:text-blue-600 px-3 py-2 rounded-lg border border-blue-500 hover:bg-blue-100 flex items-center space-x-1"
+              aria-label="HomePage"
+            >
+              <FiHome size={20} />
+            </button>
+
+            {/* Sign Out Button */}
+            <button
+              onClick={handleSignOut}
+              className="text-red-500 hover:text-red-600 px-3 py-2 rounded-lg border border-red-500 hover:bg-red-100 flex items-center space-x-1"
+              aria-label="Sign Out"
+            >
+              <FiLogOut size={20} />
+            </button>
+          </div>
+
+          {/* Title */}
+          <h2 className="text-xl font-bold text-center mb-6">
+            Your Study Groups
+          </h2>
+
+          {/* Courses Section */}
+          {courses.length > 0 ? (
+            <div
+              className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 overflow-y-auto"
+              style={{ maxHeight: "400px" }} // Add scroll if there are many groups
+            >
+              {courses.map((course, index) => (
+                <div
+                  key={index}
+                  className="relative bg-blue-100 p-6 rounded-lg shadow-lg text-center flex flex-col items-center"
+                >
+                  <h3 className="text-lg font-bold mb-2">{course.name}</h3>
+                  <p className="text-sm mb-2">
+                    <strong>Course Number:</strong> {course.courseName}
+                  </p>
+                  <p className="text-sm mb-2">
+                    <strong>Location:</strong> {course.location}
+                  </p>
+                  <p className="text-sm mb-4">
+                    <strong>Members:</strong> {course.memberLimit}
+                  </p>
+                  <div className="flex space-x-2">
                     <button
-                        onClick={handleSignOut}
-                        className="absolute top-4 right-4 text-red-500 hover:text-red-600"
-                        aria-label="Sign Out"
+                      onClick={() => navigate("/chat")}
+                      className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                     >
-                        <FiLogOut size={20} />
+                      Select
                     </button>
-
-                    {/* Title */}
-                    <h2 className="text-xl font-bold text-center mb-6">
-                        Your Study Groups
-                    </h2>
-
-                    {/* Course Cards */}
-                    <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
-                        {courses.map((course, index) => (
-                            <div
-                                key={index}
-                                className="bg-blue-100 p-6 rounded-lg shadow-lg text-center flex flex-col items-center"
-                            >
-                                <h3 className="text-lg font-bold mb-2">{course.name}</h3>
-                                <p className="text-sm mb-2">Located in {course.location}</p>
-                                <p className="text-sm mb-4">{course.memberLimit} Members</p>
-                                <button
-                                    onClick={() => navigate("/chat")}
-                                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                                >
-                                    Select
-                                </button>
-                            </div>
-                        ))}
-                    </div>
+                    <button
+                      onClick={() => handleDelete(index)}
+                      className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
-            </main>
-        </>
-    );
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center h-64">
+              <p className="text-center text-gray-500">
+                No study groups available. Create one to get started!
+              </p>
+            </div>
+          )}
+        </div>
+      </main>
+    </>
+  );
 };
 
 export default Select;

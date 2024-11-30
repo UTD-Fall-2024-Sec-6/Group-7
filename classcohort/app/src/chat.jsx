@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiLogOut } from "react-icons/fi"; // Importing the logout icon
+import { FiLogOut, FiHome } from "react-icons/fi"; // Importing icons
 
 const ChatPage = () => {
   const [chats, setChats] = useState([
@@ -11,7 +11,7 @@ const ChatPage = () => {
     { id: 5, name: "Chat 5" },
     { id: 6, name: "Chat 6" },
   ]);
-  const [currentChatId, setCurrentChatId] = useState(1); // Active chat ID
+  const [currentChatId, setCurrentChatId] = useState(1);
   const [chatHistories, setChatHistories] = useState({
     1: [{ id: 1, text: "Hello!", sender: "me" }],
     2: [{ id: 1, text: "Welcome to Chat 2", sender: "them" }],
@@ -24,7 +24,6 @@ const ChatPage = () => {
   const chatBoxRef = useRef(null);
   const navigate = useNavigate();
 
-  // Auto-scroll to the newest message
   useEffect(() => {
     if (chatBoxRef.current) {
       chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
@@ -35,7 +34,6 @@ const ChatPage = () => {
     e.preventDefault();
     if (!newMessage.trim()) return;
 
-    // Add user message to the current chat history
     const userMessage = { id: Date.now(), text: newMessage, sender: "me" };
     setChatHistories((prevHistories) => ({
       ...prevHistories,
@@ -43,7 +41,6 @@ const ChatPage = () => {
     }));
     setNewMessage("");
 
-    // Simulated bot response
     setTimeout(() => {
       const botMessage = {
         id: Date.now() + 1,
@@ -60,55 +57,72 @@ const ChatPage = () => {
   const handleChatSwitch = (chatId) => {
     setCurrentChatId(chatId);
 
-    // If the chat does not exist in the history, initialize it
     setChatHistories((prevHistories) => ({
       ...prevHistories,
       [chatId]: prevHistories[chatId] || [],
     }));
   };
 
+  const handleHomePage = () => {
+    navigate("/app");
+  };
+
   const handleSignOut = () => {
-    // Perform sign-out logic
-    navigate("/signin"); // Redirect to sign-in page
+    navigate("/signin");
   };
 
   return (
     <>
       <main className="h-screen flex items-center justify-center">
         <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-4xl relative">
-          {/* Sign Out Button */}
-          <button
-            onClick={handleSignOut}
-            className="absolute top-4 right-4 text-red-500 hover:text-red-600"
-            aria-label="Sign Out"
-          >
-            <FiLogOut size={20} />
-          </button>
+          {/* Navigation Buttons */}
+          <div className="absolute top-4 right-4 flex space-x-2">
+            {/* Homepage Button */}
+            <button
+              onClick={handleHomePage}
+              className="text-blue-500 hover:text-blue-600 px-3 py-2 rounded-lg border border-blue-500 hover:bg-blue-100 flex items-center space-x-1"
+              aria-label="HomePage"
+            >
+              <FiHome size={20} />
+            </button>
+
+            {/* Sign Out Button */}
+            <button
+              onClick={handleSignOut}
+              className="text-red-500 hover:text-red-600 px-3 py-2 rounded-lg border border-red-500 hover:bg-red-100 flex items-center space-x-1"
+              aria-label="Sign Out"
+            >
+              <FiLogOut size={20} />
+            </button>
+          </div>
 
           {/* Header */}
-          <h2 className="text-xl font-bold text-center mb-4">Message</h2>
+          <h2 className="text-xl font-bold text-center mb-4">
+            {chats.find((chat) => chat.id === currentChatId)?.name || "Message"}
+          </h2>
 
           {/* Main Content */}
           <div className="flex space-x-6">
             {/* Left Section: Recent Chats */}
             <div className="space-y-4 w-1/4">
-              <div>
-                <h3 className="text-lg font-bold text-center">Recent Chats</h3>
-                <div className="bg-blue-100 rounded-lg p-2 space-y-2">
-                  {chats.map((chat) => (
-                    <p
-                      key={chat.id}
-                      onClick={() => handleChatSwitch(chat.id)}
-                      className={`p-2 rounded-lg text-center cursor-pointer ${
-                        currentChatId === chat.id
-                          ? "bg-blue-500 text-white"
-                          : "bg-blue-200 hover:bg-blue-300"
-                      }`}
-                    >
-                      {chat.name}
-                    </p>
-                  ))}
-                </div>
+              <h3 className="text-lg font-bold text-center">Recent Chats</h3>
+              <div
+                className="bg-blue-100 rounded-lg p-2 space-y-2 overflow-y-auto"
+                style={{ maxHeight: "300px" }}
+              >
+                {chats.map((chat) => (
+                  <p
+                    key={chat.id}
+                    onClick={() => handleChatSwitch(chat.id)}
+                    className={`p-2 rounded-lg text-center cursor-pointer ${
+                      currentChatId === chat.id
+                        ? "bg-blue-500 text-white"
+                        : "bg-blue-200 hover:bg-blue-300"
+                    }`}
+                  >
+                    {chat.name}
+                  </p>
+                ))}
               </div>
             </div>
 
@@ -159,16 +173,6 @@ const ChatPage = () => {
                 </button>
               </form>
             </div>
-          </div>
-
-          {/* Navigation Button to /app */}
-          <div className="flex justify-center mt-4">
-            <button
-              onClick={() => navigate("/app")}
-              className="px-6 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-            >
-              Go to HomePage
-            </button>
           </div>
         </div>
       </main>
