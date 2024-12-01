@@ -20,10 +20,10 @@ const JoinGroup = () => {
       {
         courseName: "Math 101",
         location: "Library Room 2",
-        dateTime: new Date().setHours(new Date().getHours() + 2),
+        dateTime: new Date(new Date().setHours(0, 0, 0, 0)),
         memberLimit: 5,
-        members: []
-      }
+        members: [],
+      },
     ];
 
     const mergedGroups = [...existingGroups];
@@ -41,8 +41,13 @@ const JoinGroup = () => {
       }
     });
 
-    localStorage.setItem("studyGroups", JSON.stringify(mergedGroups));
-    setStudyGroups(mergedGroups);
+    // Remove duplicates based on courseName
+    const uniqueGroups = mergedGroups.filter((group, index, self) =>
+      index === self.findIndex((g) => g.courseName === group.courseName)
+    );
+
+    localStorage.setItem("studyGroups", JSON.stringify(uniqueGroups));
+    setStudyGroups(uniqueGroups);
   }, []);
 
   useEffect(() => {
@@ -61,7 +66,6 @@ const JoinGroup = () => {
   const handleSearch = (query) => {
     setSearchQuery(query);
 
-    // Check for groups matching the search query
     const matches = studyGroups.filter(
       (group) =>
         group.courseName.toLowerCase().includes(query.toLowerCase()) ||
@@ -92,19 +96,16 @@ const JoinGroup = () => {
 
     const { members = [], memberLimit } = selectedGroup;
 
-    // Check if user is already a member
     if (members.includes(currentUser)) {
       alert("You are already a member of this group!");
       return;
     }
 
-    // Check if group is full
     if (members.length >= memberLimit) {
       alert("This group is already full!");
       return;
     }
 
-    // Update the group's members
     const updatedGroups = studyGroups.map((group) => {
       if (group.dateTime === selectedGroup.dateTime) {
         return { ...group, members: [...members, currentUser] };
@@ -112,7 +113,6 @@ const JoinGroup = () => {
       return group;
     });
 
-    // Save to localStorage and update state
     localStorage.setItem("studyGroups", JSON.stringify(updatedGroups));
     setStudyGroups(updatedGroups);
 
