@@ -73,7 +73,7 @@ const ChatPage = () => {
     setTimeout(() => {
       const botMessage = {
         id: Date.now() + 1,
-        text: "I'm a chatbot! How can I help?",
+        text: "Hello",
         sender: "them",
       };
       setChatHistories((prevHistories) => ({
@@ -137,11 +137,10 @@ const ChatPage = () => {
                 <p
                   key={chat.id}
                   onClick={() => handleChatSwitch(chat.id)}
-                  className={`p-2 rounded-lg text-center cursor-pointer ${
-                    currentChatId === chat.id
-                      ? "bg-blue-500 text-white"
-                      : "bg-blue-200 hover:bg-blue-300"
-                  }`}
+                  className={`p-2 rounded-lg text-center cursor-pointer ${currentChatId === chat.id
+                    ? "bg-blue-500 text-white"
+                    : "bg-blue-200 hover:bg-blue-300"
+                    }`}
                 >
                   {chat.name}
                 </p>
@@ -156,16 +155,14 @@ const ChatPage = () => {
               {(chatHistories[currentChatId] || []).map((msg) => (
                 <div
                   key={msg.id}
-                  className={`flex ${
-                    msg.sender === "me" ? "justify-end" : "justify-start"
-                  } mb-2`}
+                  className={`flex ${msg.sender === "me" ? "justify-end" : "justify-start"
+                    } mb-2`}
                 >
                   <p
-                    className={`${
-                      msg.sender === "me"
-                        ? "bg-blue-500 text-white"
-                        : "bg-blue-200 text-gray-800"
-                    } px-4 py-2 rounded-lg max-w-xs`}
+                    className={`${msg.sender === "me"
+                      ? "bg-blue-500 text-white"
+                      : "bg-blue-200 text-gray-800"
+                      } px-4 py-2 rounded-lg max-w-xs`}
                   >
                     {msg.text}
                   </p>
@@ -181,9 +178,8 @@ const ChatPage = () => {
                 placeholder="Type a message..."
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
-                className={`flex-grow border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 ${
-                  errorMessage ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`flex-grow border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 ${errorMessage ? "border-red-500" : "border-gray-300"
+                  }`}
               />
               {/* Inline Error Message */}
               {errorMessage && (
