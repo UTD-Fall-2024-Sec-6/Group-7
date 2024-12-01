@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiLogOut, FiHome } from "react-icons/fi"; // Importing icons
+import { FiLogOut, FiHome } from "react-icons/fi";
 
 const CreateStudyGroup = () => {
   const navigate = useNavigate();
@@ -13,6 +13,13 @@ const CreateStudyGroup = () => {
   const [memberLimit, setMemberLimit] = useState(6);
   const [dateTime, setDateTime] = useState("");
   const [dateError, setDateError] = useState(""); // To handle date/time errors
+
+  const normalizeDateToMinute = (date) => {
+    const normalized = new Date(date);
+    normalized.setSeconds(0);
+    normalized.setMilliseconds(0);
+    return normalized;
+  };
 
   const handleIncrement = () => {
     setMemberLimit((prev) => prev + 1);
@@ -32,7 +39,11 @@ const CreateStudyGroup = () => {
 
   const handleDateChange = (value) => {
     setDateTime(value);
-    if (new Date(value) <= new Date()) {
+
+    const selectedDate = normalizeDateToMinute(new Date(value));
+    const currentDate = normalizeDateToMinute(new Date());
+
+    if (selectedDate < currentDate) {
       setDateError("Please select a valid future date and time.");
     } else {
       setDateError("");
@@ -40,30 +51,25 @@ const CreateStudyGroup = () => {
   };
 
   const handleConfirm = () => {
-    // Validate Date/Time
-    if (!dateTime || new Date(dateTime) <= new Date()) {
+    const selectedDate = normalizeDateToMinute(new Date(dateTime));
+    const currentDate = normalizeDateToMinute(new Date());
+
+    if (!dateTime || selectedDate < currentDate) {
       setDateError("Please select a valid future date and time.");
       return;
     }
 
-    // Validate Member Limit
     if (memberLimit <= 0) {
       alert("Member limit must be greater than 0!");
       return;
     }
 
-    // Save the study group information and navigate to the Select page
     const newStudyGroup = { courseName, location, memberLimit, dateTime };
-
-    // Retrieve existing study groups from localStorage
     const existingGroups =
       JSON.parse(localStorage.getItem("studyGroups")) || [];
 
-    // Add new study group
     const updatedGroups = [...existingGroups, newStudyGroup];
     localStorage.setItem("studyGroups", JSON.stringify(updatedGroups));
-
-    // Navigate to the Select page
     navigate("/select");
   };
 
@@ -71,9 +77,7 @@ const CreateStudyGroup = () => {
     <>
       <main className="h-screen flex items-center justify-center">
         <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-2xl relative">
-          {/* Navigation Buttons */}
           <div className="absolute top-4 right-4 flex space-x-2">
-            {/* Homepage Button */}
             <button
               onClick={handleHomePage}
               className="text-blue-500 hover:text-blue-600 px-3 py-2 rounded-lg border border-blue-500 hover:bg-blue-100 flex items-center space-x-1"
@@ -81,8 +85,6 @@ const CreateStudyGroup = () => {
             >
               <FiHome size={20} />
             </button>
-
-            {/* Sign Out Button */}
             <button
               onClick={handleSignOut}
               className="text-red-500 hover:text-red-600 px-3 py-2 rounded-lg border border-red-500 hover:bg-red-100 flex items-center space-x-1"
@@ -91,15 +93,8 @@ const CreateStudyGroup = () => {
               <FiLogOut size={20} />
             </button>
           </div>
-
-          {/* Header */}
-          <h2 className="text-xl font-bold text-center mb-4">
-            Create Study Group
-          </h2>
-
-          {/* Main Content */}
+          <h2 className="text-xl font-bold text-center mb-4">Create Study Group</h2>
           <div className="space-y-4">
-            {/* Course Name Dropdown */}
             <div>
               <label className="block text-sm font-bold">Course Name</label>
               <select
@@ -114,8 +109,6 @@ const CreateStudyGroup = () => {
                 ))}
               </select>
             </div>
-
-            {/* Location Dropdown */}
             <div>
               <label className="block text-sm font-bold">Location</label>
               <select
@@ -130,8 +123,6 @@ const CreateStudyGroup = () => {
                 ))}
               </select>
             </div>
-
-            {/* Date/Time Picker */}
             <div>
               <label className="block text-sm font-bold">Date/Time</label>
               <input
@@ -148,8 +139,6 @@ const CreateStudyGroup = () => {
                 <p className="text-red-500 text-sm mt-1">{dateError}</p>
               )}
             </div>
-
-            {/* Member Limit */}
             <div>
               <label className="block text-sm font-bold text-center">
                 Member Limit
@@ -171,8 +160,6 @@ const CreateStudyGroup = () => {
               </div>
             </div>
           </div>
-
-          {/* Confirm Button */}
           <div className="flex justify-center mt-6">
             <button
               onClick={handleConfirm}
